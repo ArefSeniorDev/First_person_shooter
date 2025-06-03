@@ -7,7 +7,6 @@ public class GunRaycast : MonoBehaviour
     public Camera fpsCam;
     public LayerMask enemyLayer;
     public ParticleSystem muzzleFlash;
-    public TextMesh text; 
     private int _point = 0;
     void Update()
     {
@@ -26,7 +25,7 @@ public class GunRaycast : MonoBehaviour
             muzzleFlash.Play();
             Debug.Log("Hit: " + hit.collider.name);
             Destroy(hit.collider.gameObject);
-            text.text = _point++.ToString();
+            FindObjectOfType<KillCounter>().AddKill();
         }
     }
 }

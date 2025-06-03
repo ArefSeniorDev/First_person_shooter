@@ -9,12 +9,8 @@ public class EnemyAttack : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("OnTriggerEnter ");
-
         if (other.CompareTag("Player") && Time.time >= nextAttackTime)
         {
-            Debug.Log("OnTriggerEnter 1");
-
             PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
             if (playerHealth != null)
             {
