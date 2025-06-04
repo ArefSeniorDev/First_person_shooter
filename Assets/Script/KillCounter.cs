@@ -23,4 +23,22 @@ public class KillCounter : MonoBehaviour
         if (killText != null)
             killText.text = "Kills: " + killCount;
     }
+    public void CheckHighScore()
+    {
+        int currentHigh = PlayerPrefs.GetInt("HighKillCount", 0);
+
+        if (killCount > currentHigh)
+        {
+            PlayerPrefs.SetInt("HighKillCount", killCount);
+            PlayerPrefs.Save();
+            Debug.Log("New High Score: " + killCount);
+        }
+        else
+        {
+            Debug.Log("No new high score. Current: " + killCount + ", High: " + currentHigh);
+        }
+
+        FindObjectOfType<HighScoreDisplay>().UpdateScore();
+
+    }
 }

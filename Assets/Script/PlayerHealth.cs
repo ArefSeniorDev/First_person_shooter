@@ -41,5 +41,7 @@ public class PlayerHealth : MonoBehaviour
         Time.timeScale = 0f; // Pause the game
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        FindObjectOfType<KillCounter>().CheckHighScore();
+
     }
 }

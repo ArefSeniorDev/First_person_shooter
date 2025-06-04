@@ -7,7 +7,13 @@ public class HighScoreDisplay : MonoBehaviour
 
     void Start()
     {
-        int highScore = PlayerPrefs.GetInt("HighScore", 0);
+        UpdateScore();
+    }
+
+    public void UpdateScore()
+    {
+        int highScore = PlayerPrefs.GetInt("HighKillCount", 0);
+        Debug.Log(highScore);
         highScoreText.text = "High Score: " + highScore;
     }
 }
