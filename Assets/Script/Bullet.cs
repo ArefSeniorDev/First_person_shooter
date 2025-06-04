@@ -18,15 +18,6 @@ public class Bullet : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        //Debug.Log("Hit object: " + collision.gameObject.name);
-        EnemyHealth health = collision.collider.GetComponent<EnemyHealth>();
-        if (health != null)
-        {
-            Debug.LogError("Shoted");
-
-            health.TakeDamage(damage);
-        }
-
         Destroy(gameObject);
     }
 }
