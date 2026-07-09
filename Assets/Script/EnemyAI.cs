@@ -3,144 +3,113 @@ using UnityEngine.AI;
 
 public class EnemyAI : MonoBehaviour
 {
-    public Transform target;
-    public float stoppingDistance = 1.6f;
-    public float detectionInterval = 0.25f;
-    public float destinationRefreshInterval = 0.15f;
-    public float navMeshSampleDistance = 4f;
-    public string legacyWalkAnimation = "Zombie@Z_Walk_InPlace";
-    public string legacyIdleAnimation = "Zombie@Z_Idle";
+	public Transform target;
+	public float stoppingDistance = 1.6f;
+	public float detectionInterval = 0.25f;
 
-    private NavMeshAgent agent;
-    private Animator animator;
-    private Animation legacyAnimation;
-    private float nextDetectionTime;
-    private float nextDestinationRefreshTime;
-    private Vector3 lastDestination;
+	[Header("Animation Names")]
+	public string legacyWalkAnimation = "Z_Walk_InPlace"; 
 
-    private const float DestinationMoveThreshold = 0.2f;
+	public string legacyIdleAnimation = "Z_Walk_InPlace"; 
 
-    void Start()
-    {
-        // Cache the movement and animation components once so Update stays light.
-        agent = GetComponent<NavMeshAgent>();
-        animator = GetComponentInChildren<Animator>();
-        legacyAnimation = GetComponentInChildren<Animation>();
+	public string legacyAttackAnimation = "Z_Attack";
 
-        if (agent != null)
-        {
-            agent.stoppingDistance = stoppingDistance;
-            agent.updateRotation = true;
-        }
+	public string legacyStumbleAnimation = "Z_Walk_InPlace"; 
 
-        FindTarget();
-    }
+	private NavMeshAgent agent;
+	private Animation legacyAnimation;
+	private float nextDetectionTime;
 
-    void Update()
-    {
-        if (target == null || !target.gameObject.activeInHierarchy)
-        {
-            target = null;
-            FindTarget();
-        }
+	private float changeStateTimer = 0f;
+	private string currentMoveAnimation;
 
-        if (target == null || agent == null || !agent.enabled)
-        {
-            PlayZombieAnimation(false);
-            return;
-        }
+	void Start()
+	{
+		agent = GetComponent<NavMeshAgent>();
+		legacyAnimation = GetComponentInChildren<Animation>();
 
-        if (!EnsureAgentIsOnNavMesh())
-        {
-            PlayZombieAnimation(false);
-            return;
-        }
+		if (agent != null)
+		{
+			agent.stoppingDistance = stoppingDistance;
+		}
 
-        UpdateDestination();
+		if (legacyAnimation != null)
+		{
+			if (legacyAnimation[legacyIdleAnimation] != null)
+				legacyAnimation[legacyIdleAnimation].wrapMode = WrapMode.Loop;
 
-        bool isMoving = agent.pathPending || agent.velocity.sqrMagnitude > 0.05f || agent.remainingDistance > agent.stoppingDistance + 0.05f;
-        PlayZombieAnimation(isMoving);
-    }
+			if (legacyAnimation[legacyWalkAnimation] != null)
+				legacyAnimation[legacyWalkAnimation].wrapMode = WrapMode.Loop;
 
-    private void FindTarget()
-    {
-        if (Time.time < nextDetectionTime)
-        {
-            return;
-        }
+			if (legacyAnimation[legacyStumbleAnimation] != null)
+				legacyAnimation[legacyStumbleAnimation].wrapMode = WrapMode.Loop;
 
-        nextDetectionTime = Time.time + detectionInterval;
+			if (legacyAnimation[legacyAttackAnimation] != null)
+				legacyAnimation[legacyAttackAnimation].wrapMode = WrapMode.Once;
+		}
 
-        // Prefer the Player tag, but fall back to PlayerHealth so a missing tag does not break zombie tracking.
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
-        {
-            target = player.transform;
-            return;
-        }
+		currentMoveAnimation = legacyWalkAnimation; 
+		FindTarget();
+	}
 
-        PlayerHealth playerHealth = FindObjectOfType<PlayerHealth>();
-        if (playerHealth != null)
-        {
-            target = playerHealth.transform;
-        }
-    }
+	void Update()
+	{
+		if (target == null || !target.gameObject.activeInHierarchy)
+		{
+			target = null;
+			FindTarget();
+		}
 
-    private bool EnsureAgentIsOnNavMesh()
-    {
-        if (agent.isOnNavMesh)
-        {
-            return true;
-        }
+		if (target == null || agent == null || !agent.enabled) return;
 
-        NavMeshHit hit;
-        if (NavMesh.SamplePosition(transform.position, out hit, navMeshSampleDistance, NavMesh.AllAreas))
-        {
-            agent.Warp(hit.position);
-            return agent.isOnNavMesh;
-        }
+		if (legacyAnimation != null && legacyAnimation[legacyAttackAnimation] != null && legacyAnimation.IsPlaying(legacyAttackAnimation))
+		{
+			agent.isStopped = true;
+			return;
+		}
 
-        return false;
-    }
+		agent.isStopped = false;
+		agent.SetDestination(target.position);
 
-    private void UpdateDestination()
-    {
-        if (Time.time < nextDestinationRefreshTime && (target.position - lastDestination).sqrMagnitude < DestinationMoveThreshold * DestinationMoveThreshold)
-        {
-            return;
-        }
+		bool isMoving = agent.velocity.sqrMagnitude > 0.05f || agent.remainingDistance > agent.stoppingDistance + 0.05f;
 
-        nextDestinationRefreshTime = Time.time + destinationRefreshInterval;
+		if (isMoving)
+		{
+			changeStateTimer -= Time.deltaTime;
+			if (changeStateTimer <= 0f)
+			{
+				changeStateTimer = Random.Range(3f, 6f);
+				currentMoveAnimation = (Random.value > 0.5f) ? legacyWalkAnimation : legacyStumbleAnimation;
+			}
 
-        NavMeshHit hit;
-        Vector3 destination = target.position;
-        if (NavMesh.SamplePosition(target.position, out hit, navMeshSampleDistance, NavMesh.AllAreas))
-        {
-            destination = hit.position;
-        }
+			PlayAnimation(currentMoveAnimation);
+		}
+		else
+		{
+			PlayAnimation(legacyIdleAnimation);
+		}
+	}
 
-        if (agent.SetDestination(destination))
-        {
-            lastDestination = target.position;
-        }
-    }
+	private void FindTarget()
+	{
+		if (Time.time < nextDetectionTime) return;
+		nextDetectionTime = Time.time + detectionInterval;
 
-    private void PlayZombieAnimation(bool isMoving)
-    {
-        // Mecanim controllers can read a Speed float if the zombie prefab uses Animator.
-        if (animator != null && animator.runtimeAnimatorController != null)
-        {
-            animator.SetFloat("Speed", isMoving ? 1f : 0f);
-        }
+		GameObject player = GameObject.FindGameObjectWithTag("Player");
+		if (player != null)
+		{
+			target = player.transform;
+		}
+	}
 
-        // Older Unity zombie imports often use the legacy Animation component.
-        if (legacyAnimation != null)
-        {
-            string clipName = isMoving ? legacyWalkAnimation : legacyIdleAnimation;
-            if (legacyAnimation[clipName] != null && !legacyAnimation.IsPlaying(clipName))
-            {
-                legacyAnimation.CrossFade(clipName, 0.2f);
-            }
-        }
-    }
+	private void PlayAnimation(string animName)
+	{
+		if (legacyAnimation != null && legacyAnimation[animName] != null)
+		{
+			if (!legacyAnimation.IsPlaying(animName))
+			{
+				legacyAnimation.CrossFade(animName, 0.3f);
+			}
+		}
+	}
 }
