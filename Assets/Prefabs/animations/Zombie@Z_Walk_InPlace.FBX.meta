@@ -161,6 +161,7 @@ ModelImporter:
     4300026: Z_Hip
     7400000: ZombieFree@animation
     9500000: //RootNode
+    11100000: //RootNode
     13700000: Z_Body
     13700002: Z_BodyTop
     13700004: Z_Head
@@ -239,7 +240,7 @@ ModelImporter:
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 1
   humanoidOversampling: 1
   additionalBone: 0
   userData: 

@@ -12,9 +12,15 @@ public class PlayerHealth : MonoBehaviour
 
     void Start()
     {
+        Time.timeScale = 1f;
         currentHealth = maxHealth;
         UpdateHealthBar();
-        gameOverPanel.SetActive(false);
+
+        // The Game Over panel must start hidden; otherwise it can appear as a thin UI line in Game view.
+        if (gameOverPanel != null)
+        {
+            gameOverPanel.SetActive(false);
+        }
     }
 
     public void TakeDamage(float amount)
@@ -37,11 +43,20 @@ public class PlayerHealth : MonoBehaviour
 
     void Die()
     {
-        gameOverPanel.SetActive(true);
+        if (gameOverPanel != null)
+        {
+            gameOverPanel.SetActive(true);
+        }
+
         Time.timeScale = 0f; // Pause the game
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        FindObjectOfType<KillCounter>().CheckHighScore();
+
+        KillCounter killCounter = FindObjectOfType<KillCounter>();
+        if (killCounter != null)
+        {
+            killCounter.CheckHighScore();
+        }
 
     }
 }

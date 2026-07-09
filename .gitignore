@@ -17,7 +17,7 @@ obj/
 *.userprefs
 *.pidb
 *.booproj
-
+*.log
 
 # OS files
 .DS_Store
@@ -35,4 +35,12 @@ sysinfo.txt
 
 # Visual Studio Code
 .vscode/
-.vs/
+.vs/ImportedPackages/
+/CityAssets/
+/Material/
+/Prefabs/
+*.log
+ImportedPackages/
+/CityAssets/
+/Material/
+/Prefabs/
