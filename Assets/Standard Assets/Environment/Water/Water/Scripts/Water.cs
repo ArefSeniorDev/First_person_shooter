@@ -7,6 +7,10 @@ namespace UnityStandardAssets.Water
     [ExecuteInEditMode] // Make water live-update even when not in play mode
     public class Water : MonoBehaviour
     {
+        private const string WaveSpeedProperty = "WaveSpeed";
+        private const string LegacyWaveSpeedProperty = "_WaveSpeed";
+        private const string WaveScaleProperty = "_WaveScale";
+
         public enum WaterMode
         {
             Simple = 0,
@@ -200,8 +204,14 @@ namespace UnityStandardAssets.Water
                 return;
             }
 
-            Vector4 waveSpeed = mat.GetVector("WaveSpeed");
-            float waveScale = mat.GetFloat("_WaveScale");
+            string waveSpeedProperty;
+            if (!TryGetWaveSpeedProperty(mat, out waveSpeedProperty) || !mat.HasProperty(WaveScaleProperty))
+            {
+                return;
+            }
+
+            Vector4 waveSpeed = mat.GetVector(waveSpeedProperty);
+            float waveScale = mat.GetFloat(WaveScaleProperty);
             Vector4 waveScale4 = new Vector4(waveScale, waveScale, waveScale * 0.4f, waveScale * 0.45f);
 
             // Time since level load, and do intermediate calculations with doubles
@@ -215,6 +225,18 @@ namespace UnityStandardAssets.Water
 
             mat.SetVector("_WaveOffset", offsetClamped);
             mat.SetVector("_WaveScale4", waveScale4);
+        }
+
+        private static bool TryGetWaveSpeedProperty(Material mat, out string propertyName)
+        {
+            propertyName = WaveSpeedProperty;
+            if (mat.HasProperty(WaveSpeedProperty))
+            {
+                return true;
+            }
+
+            propertyName = LegacyWaveSpeedProperty;
+            return mat.HasProperty(LegacyWaveSpeedProperty);
         }
 
         void UpdateCameraModes(Camera src, Camera dest)

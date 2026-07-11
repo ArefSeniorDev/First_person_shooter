@@ -34,7 +34,6 @@ public class EnemyAttack : MonoBehaviour
                 playerHealth.TakeDamage(damage);
                 nextAttackTime = Time.time + attackRate;
 
-                // پخش انیمیشن حمله
                 if (legacyAnim != null && legacyAnim[attackAnimationName] != null)
                 {
                     legacyAnim.CrossFade(attackAnimationName, 0.1f);
