@@ -36,7 +36,6 @@ public class GunRaycast : MonoBehaviour
 	{
 		if (fpsCam == null)
 		{
-			Debug.LogWarning("GunRaycast needs an FPS camera.");
 			return;
 		}
 
@@ -56,8 +55,6 @@ public class GunRaycast : MonoBehaviour
 
 		if (Physics.Raycast(ray, out hit, range, enemyLayer))
 		{
-			Debug.Log("Hit: " + hit.collider.name);
-
 			EnemyHealth enemyHealth = hit.collider.GetComponentInParent<EnemyHealth>();
 
 			if (enemyHealth != null)

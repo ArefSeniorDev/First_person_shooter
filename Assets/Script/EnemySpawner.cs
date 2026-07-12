@@ -6,9 +6,8 @@ public class EnemySpawner : MonoBehaviour
 {
 	public GameObject enemyPrefab;
 	public Transform spawnPoint;
-	public float spawnInterval = 20f; // تغییر به 20 ثانیه
+	public float spawnInterval = 20f;
 
-	// کدی برای جلوگیری از اسپاون شدن زامبی در نقطه ای که زامبی دیگری ایستاده است
 	public float spawnCheckRadius = 1.5f; 
 	public float navMeshSampleRadius = 8f;
 
@@ -39,7 +38,6 @@ public class EnemySpawner : MonoBehaviour
 	{
 		if (enemyPrefab == null)
 		{
-			Debug.LogError("Enemy prefab not assigned!");
 			return;
 		}
 
@@ -50,8 +48,6 @@ public class EnemySpawner : MonoBehaviour
 			return;
 		}
 
-		// بررسی اینکه آیا در نقطه اسپاون، زامبی دیگری ایستاده است یا نه
-		// این کار از گیر کردن زامبی‌ها در هم در لحظه تولد جلوگیری می‌کند
 		Collider[] hitColliders = Physics.OverlapSphere(spawnPosition, spawnCheckRadius);
 		bool isSpaceClear = true;
 
@@ -76,7 +72,6 @@ public class EnemySpawner : MonoBehaviour
 		}
 		else
 		{
-			// اگر جا پر بود، 1 ثانیه دیگر دوباره تلاش کن
 			timer = 1f; 
 		}
 	}

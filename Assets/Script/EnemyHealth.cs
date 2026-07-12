@@ -4,7 +4,7 @@ using UnityEngine.AI;
 public class EnemyHealth : MonoBehaviour
 {
 	public float health = 100f;
-	public string deathAnimationName = "Z_FallingBack"; // نام دقیق انیمیشن مردن
+	public string deathAnimationName = "Z_FallingBack";
 
 	private bool isDead = false;
 	private Animation legacyAnim;
@@ -13,7 +13,6 @@ public class EnemyHealth : MonoBehaviour
 	{
 		legacyAnim = GetComponentInChildren<Animation>();
 
-		// قفل کردن انیمیشن مردن که فقط یک‌بار پخش شود
 		if (legacyAnim != null && legacyAnim[deathAnimationName] != null)
 		{
 			legacyAnim[deathAnimationName].wrapMode = WrapMode.Once;
@@ -48,7 +47,6 @@ public class EnemyHealth : MonoBehaviour
 		{
 			gameManager.EnemyKilled();
 		}
-		// -----------------------------------------------------
 
 		if (legacyAnim != null && legacyAnim[deathAnimationName] != null)
 		{

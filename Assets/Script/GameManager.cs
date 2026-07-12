@@ -18,7 +18,6 @@ public class GameManager : MonoBehaviour
     void WinGame()
     {
         Debug.Log("You Win!");
-        //SceneManager.LoadScene("WinScene");
     }
     public void LoadMainMenu()
     {

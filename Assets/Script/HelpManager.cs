@@ -6,7 +6,7 @@ public class HelpManager : MonoBehaviour
 
     void Start()
     {
-        helpPanel.SetActive(false); // در شروع پنهان باشد
+        helpPanel.SetActive(false); 
     }
 
     public void ShowHelp()

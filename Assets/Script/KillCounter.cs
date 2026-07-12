@@ -30,11 +30,9 @@ public class KillCounter : MonoBehaviour
         {
             PlayerPrefs.SetInt("HighKillCount", killCount);
             PlayerPrefs.Save();
-            Debug.Log("New High Score: " + killCount);
         }
         else
         {
-            Debug.Log("No new high score. Current: " + killCount + ", High: " + currentHigh);
         }
 
         HighScoreDisplay highScoreUI = FindObjectOfType<HighScoreDisplay>();
@@ -44,7 +42,6 @@ public class KillCounter : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("HighScoreDisplay not found in the scene.");
         }
 
     }

@@ -16,7 +16,6 @@ public class PlayerHealth : MonoBehaviour
         currentHealth = maxHealth;
         UpdateHealthBar();
 
-        // The Game Over panel must start hidden; otherwise it can appear as a thin UI line in Game view.
         if (gameOverPanel != null)
         {
             gameOverPanel.SetActive(false);
@@ -48,7 +47,7 @@ public class PlayerHealth : MonoBehaviour
             gameOverPanel.SetActive(true);
         }
 
-        Time.timeScale = 0f; // Pause the game
+        Time.timeScale = 0f; 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 

@@ -39,7 +39,6 @@ public class WeaponViewFix : MonoBehaviour
 
     void Update()
     {
-        // Hold right mouse button to move the gun into aim-down-sights mode.
         isAiming = Input.GetMouseButton(1);
 
         Vector3 targetPosition = aimPose != null ? aimPose.localPosition : aimLocalPosition;
@@ -53,7 +52,6 @@ public class WeaponViewFix : MonoBehaviour
 
     public void PlayMuzzleFlash()
     {
-        // Emit a short burst only when firing; this prevents white startup dots in front of the gun.
         if (weaponParticles != null && weaponParticles.Length > 0)
         {
             for (int i = 0; i < weaponParticles.Length; i++)
@@ -78,7 +76,6 @@ public class WeaponViewFix : MonoBehaviour
 
     public void HideWhiteArtifacts()
     {
-        // Assign scope glints, placeholder planes, or unwanted white meshes here to hide them at runtime.
         if (whiteArtifactRenderers == null)
         {
             whiteArtifactRenderers = new Renderer[0];
